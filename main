@@ -1,0 +1,240 @@
+Main 
+import 'package:flutter/material.dart'; 
+import 'package:lottie/lottie.dart'; 
+import 'package:payment_wallet/homepage.dart'; 
+import 'package:payment_wallet/login.dart'; 
+import 'package:payment_wallet/profile.dart'; 
+import 'package:shared_preferences/shared_preferences.dart'; 
+void main() { 
+  runApp(const MyApp()); 
+} 
+class MyApp extends StatelessWidget { 
+  const MyApp({super.key}); 
+  @override 
+  Widget build(BuildContext context) { 
+    return MaterialApp( 
+      theme: ThemeData.light(), 
+      home: const SignUp(), 
+      routes: { 
+        'HomeScreen': (context) => const HomePage(), 
+        'LoginScreen': (context) => const LoginScreen(), 
+        'SignupScreen': (context) => const SignUp(), 
+        'ProfileScreen': (context) => const ProfilePage(), 
+        // Other routes... 
+      }, 
+    ); 
+  } 
+} 
+class SignUp extends StatefulWidget { 
+  const SignUp({super.key}); 
+@override 
+  State<SignUp> createState() => _SignUpState(); 
+} 
+class _SignUpState extends State<SignUp> { 
+  TextEditingController usernameContr = TextEditingController(); 
+  TextEditingController emailContr = TextEditingController(); 
+  TextEditingController phoneContr = TextEditingController(); 
+  bool _open = false; 
+  @override 
+  void initState() { 
+    super.initState(); 
+    _checkOpenStatus(); 
+  } 
+  @override 
+  Widget build(BuildContext context) { 
+    return Scaffold( 
+      body: SafeArea( 
+          child: SingleChildScrollView( 
+        physics: const BouncingScrollPhysics(), 
+        child: Column( 
+          children: [ 
+            Lottie.asset('assets/animations/lottie_anim.json', repeat: false), 
+            const SizedBox( 
+              height: 70, 
+            ), 
+            signUpText(), 
+            userName(), 
+            phoneNumber(), 
+            emailAddress(), 
+            passWord(), 
+            notePass(), 
+            confirmPassword(), 
+            registerButton(context), 
+            aleradyHave(), 
+            loginButton(context) 
+          ], 
+        ), 
+   )), 
+    ); 
+  } 
+  Padding signUpText() { 
+    return const Padding( 
+      padding: EdgeInsets.all(8.0), 
+      child: Row( 
+        children: [ 
+          Text('Sign Up', 
+              style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)), 
+        ], 
+      ), 
+    ); 
+  } 
+  Padding userName() { 
+    return Padding( 
+      padding: const EdgeInsets.all(15.0), 
+      child: TextField( 
+        controller: usernameContr, 
+        decoration: const InputDecoration( 
+            labelText: 'Username', prefixIcon: Icon(Icons.person)), 
+      ), 
+    ); 
+  } 
+  Padding phoneNumber() { 
+    return Padding( 
+      padding: const EdgeInsets.all(15.0), 
+      child: TextField( 
+        keyboardType: TextInputType.phone, 
+        controller: phoneContr, 
+        decoration: const InputDecoration( 
+            labelText: 'Phone Number', prefixIcon: Icon(Icons.phone)), 
+      ), 
+    ); 
+ } 
+  emailAddress() { 
+    return Padding( 
+      padding: const EdgeInsets.all(15.0), 
+      child: TextField( 
+        keyboardType: TextInputType.emailAddress, 
+        controller: emailContr, 
+        decoration: const InputDecoration( 
+            labelText: 'Email', prefixIcon: Icon(Icons.email)), 
+      ), 
+    ); 
+  } 
+  passWord() { 
+    return const Padding( 
+      padding: EdgeInsets.all(15.0), 
+      child: TextField( 
+        obscureText: true, 
+        enableSuggestions: false, 
+        autocorrect: false, 
+        decoration: InputDecoration( 
+            labelText: 'Password', prefixIcon: Icon(Icons.lock)), 
+      ), 
+    ); 
+  } 
+  confirmPassword() { 
+    return const Padding( 
+      padding: EdgeInsets.all(15.0), 
+      child: TextField( 
+        obscureText: true, 
+        enableSuggestions: false, 
+        autocorrect: false, 
+        decoration: InputDecoration( 
+            labelText: 'Confirm password', prefixIcon: Icon(Icons.lock)), 
+      ), 
+  ); 
+  } 
+  notePass() { 
+    return Padding( 
+      padding: const EdgeInsets.all(20.0), 
+      child: Text( 
+        '* Try to include numbers, symbols, and both uppercase and lowercase letters.', 
+        style: TextStyle(color: Colors.grey.shade700), 
+      ), 
+    ); 
+  } 
+  registerButton(context) { 
+    return Padding( 
+      padding: const EdgeInsets.all(20.0), 
+      child: SizedBox( 
+          width: double.infinity, 
+          height: 100, 
+          child: ElevatedButton( 
+              onPressed: () { 
+                if (usernameContr.text.length < 3) { 
+                  ScaffoldMessenger.of(context).showSnackBar( 
+                    const SnackBar( 
+                      content: Text('Invalid Username'), 
+                      backgroundColor: Colors.red, 
+                    ), 
+                  ); 
+                } else if (emailContr.text.length < 3) { 
+                  ScaffoldMessenger.of(context).showSnackBar( 
+                    const SnackBar( 
+                      content: Text('Invalid Email'), 
+                      backgroundColor: Colors.red, 
+                    ), 
+                  ); 
+                } else if (phoneContr.text.length < 10) {
+      ScaffoldMessenger.of(context).showSnackBar( 
+                    const SnackBar( 
+                      content: Text('Invalid phone'), 
+                      backgroundColor: Colors.red, 
+                    ), 
+                  ); 
+                } else { 
+                  _saveValueUsername(); 
+                  _setOpenStatus(true); 
+                  Navigator.pushReplacementNamed(context, "HomeScreen"); 
+                } 
+              }, 
+              style: ButtonStyle( 
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>( 
+                      RoundedRectangleBorder( 
+                          borderRadius: BorderRadius.circular(18.0), 
+                          side: const BorderSide( 
+                              color: Color.fromARGB(255, 104, 104, 104))))), 
+              child: const Text( 
+                'Sign Up', 
+                style: TextStyle(fontSize: 20), 
+              ))), 
+    ); 
+  } 
+  aleradyHave() { 
+    return const Text( 
+      '* Already have an account, Log In', 
+      style: TextStyle(color: Colors.grey), 
+    ); 
+  } 
+  loginButton(context) { 
+    return Padding( 
+      padding: const EdgeInsets.all(20.0), 
+      child: SizedBox(
+      width: double.infinity, 
+          height: 100, 
+          child: ElevatedButton( 
+              onPressed: () { 
+                Navigator.pushReplacementNamed(context, "LoginScreen"); 
+              }, 
+              style: ButtonStyle( 
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>( 
+                      RoundedRectangleBorder( 
+                          borderRadius: BorderRadius.circular(18.0), 
+                          side: const BorderSide( 
+                              color: Color.fromARGB(255, 104, 104, 104))))), 
+              child: const Text( 
+                'Log In', 
+                style: TextStyle(fontSize: 20), 
+              ))), 
+    ); 
+  } 
+  Future<void> _checkOpenStatus() async { 
+    SharedPreferences prefs = await SharedPreferences.getInstance(); 
+    bool open = prefs.getBool('open') ?? false; 
+    setState(() { 
+      _open = open; 
+    }); 
+    if (_open) { 
+      // ignore: use_build_context_synchronously 
+      Navigator.pushReplacementNamed(context, "HomeScreen"); 
+    } 
+  } 
+  Future<void> _setOpenStatus(bool value) async { 
+    SharedPreferences prefs = await SharedPreferences.getInstance(); 
+    await prefs.setBool('open', value); 
+  } 
+  Future<void> _saveValueUsername() async {
+   SharedPreferences prefs = await SharedPreferences.getInstance(); 
+    prefs.setString('Username', usernameContr.text); 
+  } 
+}
